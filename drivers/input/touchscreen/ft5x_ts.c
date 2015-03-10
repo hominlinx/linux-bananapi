@@ -1981,6 +1981,10 @@ static int __init ft5x_ts_init(void)
 		class_destroy(i2c_dev_class);
 	}
 
+        //The delay is required to make the touchscreen work reliable on the Bananian system
+        //Be fixed by Nico(contact@bananian.org)
+        msleep(100); 
+
 	ret = i2c_add_driver(&ft5x_ts_driver);
 
 	return ret;
