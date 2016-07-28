@@ -204,7 +204,9 @@ typedef struct {
 /* dma operation type */
 typedef enum {
 	DMA_OP_START,  			/* start dma */
+       DMA_OP_RESUME,                    /* resume dma*/
 	DMA_OP_STOP,  			/* stop dma */
+	DMA_OP_PAUSE,               /* pause dma */
 	DMA_OP_GET_BYTECNT_LEFT,  	/* get byte cnt left */
 	DMA_OP_SET_SECURITY,  		/* set security */
 	DMA_OP_SET_HD_CB,		/* set half done callback */

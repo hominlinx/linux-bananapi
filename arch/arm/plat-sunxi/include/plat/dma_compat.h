@@ -122,12 +122,26 @@ static inline int sunxi_dma_start(struct sunxi_dma_params *dma)
 #endif
 }
 
+static inline int sunxi_dma_resume(struct sunxi_dma_params *dma)
+{
+#if defined CONFIG_ARCH_SUN7I
+	return sw_dma_ctl(dma->dma_hdl, DMA_OP_RESUME, NULL);
+#endif
+}
+
 static inline int sunxi_dma_stop(struct sunxi_dma_params *dma)
 {
 #if defined CONFIG_ARCH_SUN4I || defined CONFIG_ARCH_SUN5I
 	return sw_dma_ctrl(dma->channel, SW_DMAOP_STOP);
 #else
 	return sw_dma_ctl(dma->dma_hdl, DMA_OP_STOP, NULL);
+#endif
+}
+
+static inline int sunxi_dma_pause(struct sunxi_dma_params *dma)
+{
+#if defined CONFIG_ARCH_SUN7I
+	return sw_dma_ctl(dma->dma_hdl, DMA_OP_PAUSE, NULL);
 #endif
 }
 

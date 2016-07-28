@@ -298,20 +298,26 @@ static int sunxi_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 
 	switch (cmd) {
 	case SNDRV_PCM_TRIGGER_START:
-	case SNDRV_PCM_TRIGGER_RESUME:
-	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
 		printk("[IIS-0] dma trigger start\n");
 		prtd->state |= ST_RUNNING;
 		sunxi_dma_start(prtd->params);
 		break;
 
-	case SNDRV_PCM_TRIGGER_SUSPEND:
+       case SNDRV_PCM_TRIGGER_RESUME:
+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+              printk("[IIS-0] dma trigger resume\n");
+              sunxi_dma_resume(prtd->params);
+              break;
 	case SNDRV_PCM_TRIGGER_STOP:
-	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
         printk("[IIS-0] dma trigger stop\n");
 		prtd->state &= ~ST_RUNNING;
 		sunxi_dma_stop(prtd->params);
 		break;
+	case SNDRV_PCM_TRIGGER_SUSPEND:
+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+               printk("[IIS-0] dma trigger pause\n");
+		sunxi_dma_pause(prtd->params);
+		break;       
 
 	default:
 		ret = -EINVAL;

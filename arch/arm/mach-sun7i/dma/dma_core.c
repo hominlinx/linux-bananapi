@@ -56,6 +56,24 @@ u32 __dma_start(dma_hdl_t dma_hdl)
 }
 
 /**
+ * __dma_resume - resume dma
+ * @dma_hdl:	dma handle
+ *
+ * find the first buf in list, remove it, and start it.
+ *
+ * Returns 0 if sucess, otherwise failed.
+ */
+u32 __dma_resume(dma_hdl_t dma_hdl)
+{
+	dma_channel_t *pchan = (dma_channel_t *)dma_hdl;
+
+	/* start dma */
+	csp_dma_start(pchan);
+
+	return 0;
+}
+
+/**
  * __dma_free_buflist - free buf in list, not include cur buf
  * @pchan:	dma handle
  */
@@ -122,6 +140,23 @@ void __dma_stop(dma_hdl_t dma_hdl)
 
 	/* change channel state to idle */
 	pchan->state = CHAN_STA_IDLE;
+}
+
+/**
+ * __dma_pause - stop dma
+ * @dma_hdl:	dma handle
+ *
+ */
+void __dma_pause(dma_hdl_t dma_hdl)
+{
+	dma_channel_t *pchan = (dma_channel_t *)dma_hdl;
+
+	DMA_INF("%s: state %d, buf chain: \n", __func__, (u32)pchan->state);
+	//dma_dump_chain(pchan); /* for debug */
+
+	/* stop dma channle and clear irq pending */
+	csp_dma_stop(pchan);
+	csp_dma_clear_irqpend(pchan, CHAN_IRQ_HD | CHAN_IRQ_FD);
 }
 
 void __dma_set_hd_cb(dma_hdl_t dma_hdl, dma_cb_t *pcb)
@@ -352,9 +387,15 @@ u32 dma_ctrl(dma_hdl_t dma_hdl, dma_op_type_e op, void *parg)
 		}
 		uret = __dma_start(dma_hdl);
 		break;
+       case DMA_OP_RESUME:
+              __dma_resume(dma_hdl);
+              break;
 	case DMA_OP_STOP:
 		__dma_stop(dma_hdl);
-		break;
+		break;      
+       case DMA_OP_PAUSE:
+              __dma_pause(dma_hdl);
+              break;
 	case DMA_OP_GET_STATUS: /* only for dedicate dma */
 		*(u32 *)parg = csp_dma_get_status(pchan);
 		break;
