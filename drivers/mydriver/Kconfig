@@ -1,0 +1,15 @@
+menu "My Driver"
+config MYDRIVER
+    bool "my test driver"
+
+if MYDRIVER
+config MYDRIVER_HELLO
+    tristate "hello world"
+    help
+        a simple driver test.
+config MYDRIVER_PROCFS_TEST
+    tristate "proc fs test"
+    help
+        a simple driver for proc fs test.
+endif
+endmenu
