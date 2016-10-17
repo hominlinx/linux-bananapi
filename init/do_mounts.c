@@ -25,7 +25,10 @@
 
 int __initdata rd_doload;	/* 1 = load RAM disk, 0 = don't load */
 
-int root_mountflags = MS_RDONLY | MS_SILENT;
+// int root_mountflags = MS_RDONLY | MS_SILENT;
+// 这个flag决定了mount的flag。比如是只读的。
+int root_mountflags =  MS_SILENT;
+
 static char * __initdata root_device_name;
 static char __initdata saved_root_name[64];
 static int root_wait;
@@ -340,6 +343,15 @@ static void __init get_fs_names(char *page)
 static int __init do_mount_root(char *name, char *fs, int flags, void *data)
 {
 	struct super_block *s;
+
+	struct super_block *temp = current->fs->pwd.dentry->d_sb;
+	printk(KERN_INFO
+	       "===>>VFS: Mounted root (%s filesystem)%s on device %u:%u.\n",
+	       temp->s_type->name,
+	       temp->s_flags & MS_RDONLY ?  " readonly" : "",
+	       MAJOR(ROOT_DEV), MINOR(ROOT_DEV));
+
+	// 文件系统的安装
 	int err = sys_mount(name, "/root", fs, flags, data);
 	if (err)
 		return err;
@@ -366,6 +378,7 @@ void __init mount_block_root(char *name, int flags)
 	const char *b = name;
 #endif
 
+	printk(KERN_INFO "mount_block_root:name:%s,fs:%s, flags:%d\n", name, fs_names, flags);
 	get_fs_names(fs_names);
 retry:
 	for (p = fs_names; *p; p += strlen(p)+1) {

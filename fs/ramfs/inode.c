@@ -261,6 +261,8 @@ static struct file_system_type ramfs_fs_type = {
 	.mount		= ramfs_mount,
 	.kill_sb	= ramfs_kill_sb,
 };
+
+// 这个结构是rootfs , name 必须是rootfs。
 static struct file_system_type rootfs_fs_type = {
 	.name		= "rootfs",
 	.mount		= rootfs_mount,

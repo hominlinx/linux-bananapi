@@ -2358,6 +2358,9 @@ struct dentry *mount_subtree(struct vfsmount *mnt, const char *name)
 }
 EXPORT_SYMBOL(mount_subtree);
 
+/*sys_mount系统调用*/  
+
+
 SYSCALL_DEFINE5(mount, char __user *, dev_name, char __user *, dir_name,
 		char __user *, type, unsigned long, flags, void __user *, data)
 {
@@ -2366,7 +2369,8 @@ SYSCALL_DEFINE5(mount, char __user *, dev_name, char __user *, dir_name,
 	char *kernel_dir;
 	char *kernel_dev;
 	unsigned long data_page;
-
+	
+	/*从用户空间复制到系统空间*/  
 	ret = copy_mount_string(type, &kernel_type);
 	if (ret < 0)
 		goto out_type;
@@ -2385,6 +2389,9 @@ SYSCALL_DEFINE5(mount, char __user *, dev_name, char __user *, dir_name,
 	if (ret < 0)
 		goto out_data;
 
+	/*操作主体*/ 
+	printk(KERN_INFO "======before do_mount.,, dev:%s, dir:%s type:%s , flags:%d\n", kernel_dev, 
+	kernel_dir, kernel_type, flags);
 	ret = do_mount(kernel_dev, kernel_dir, kernel_type, flags,
 		(void *) data_page);
 
