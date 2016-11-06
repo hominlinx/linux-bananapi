@@ -11,5 +11,9 @@ config MYDRIVER_PROCFS_TEST
     tristate "proc fs test"
     help
         a simple driver for proc fs test.
+config MYDRIVER_SUBSYS_DEMO
+    tristate "sub sys demo , proc sysfs."
+    help
+        a simple driver for sys demo.
 endif
 endmenu
